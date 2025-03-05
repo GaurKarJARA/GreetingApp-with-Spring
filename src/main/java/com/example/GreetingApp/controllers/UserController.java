@@ -1,7 +1,6 @@
 package com.example.GreetingApp.controllers;
-import com.example.GreetingApp.dto.AuthUserDTO;
 import com.example.GreetingApp.service.*;
-import com.example.GreetingApp.dto.LoginDTO;
+import com.example.GreetingApp.dto.*;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,6 +27,12 @@ public class UserController {
     @PostMapping(path ="/login")
     public String login(@RequestBody LoginDTO user){
         return authenticationService.login(user);
+    }
+    //UC-SendingMail --> For sending mail to another person
+    @PostMapping(path = "/sendMail")
+    public String sendMail(@RequestBody MailDTO message){
+        emailService.sendEmail(message.getTo(), message.getSubject(), message.getBody());
+        return "Mail sent";
     }
 
 }
