@@ -1,4 +1,4 @@
-package com.example.GreetingApp.model;
+package com.example.GreetingApp.models;
 import jakarta.persistence.*;
 
 @Entity

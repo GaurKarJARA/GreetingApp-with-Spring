@@ -1,6 +1,6 @@
-package com.example.GreetingApp.controller;
+package com.example.GreetingApp.controllers;
 import com.example.GreetingApp.Exception.ResourceNotFoundException;
-import com.example.GreetingApp.model.Greeting;
+import com.example.GreetingApp.models.Greeting;
 import com.example.GreetingApp.repository.GreetingRepository;
 import com.example.GreetingApp.service.GreetingServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,8 +63,8 @@ public class GreetingController {
         return greetingService.getAllGreetings();
     }
 
-@PutMapping("/updaterepository/{id}")
-public Greeting updateGreetinginRepository(@PathVariable Long id, @RequestBody Greeting updatedGreeting) {
+    @PutMapping("/updaterepository/{id}")
+    public Greeting updateGreetinginRepository(@PathVariable Long id, @RequestBody Greeting updatedGreeting) {
     return greetingService.updateGreeting(id, updatedGreeting.getMessage());
 }
     @DeleteMapping("deletefromrepo/{id}")

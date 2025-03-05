@@ -1,5 +1,5 @@
 package com.example.GreetingApp.service;
-import com.example.GreetingApp.model.Greeting;
+import com.example.GreetingApp.models.Greeting;
 import com.example.GreetingApp.repository.GreetingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
