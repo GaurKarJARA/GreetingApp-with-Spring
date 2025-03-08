@@ -1,8 +1,10 @@
 package com.example.GreetingApp.service;
 import com.example.GreetingApp.dto.LoginDTO;
 import com.example.GreetingApp.dto.AuthUserDTO;
+import com.example.GreetingApp.interfaces.IAuthInterface;
 import com.example.GreetingApp.models.AuthUser;
 import com.example.GreetingApp.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -10,17 +12,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
     @Service
-    public class AuthenticationService {
-
+    public class AuthenticationService implements IAuthInterface {
+        @Autowired
         UserRepository userRepository;
+        @Autowired
         EmailService emailService;
+        @Autowired
         JwtTokenService jwtTokenService;
 
-        public AuthenticationService(UserRepository userRepository, EmailService emailService,JwtTokenService jwtTokenService) {
-            this.userRepository = userRepository;
-            this.emailService = emailService;
-            this.jwtTokenService = jwtTokenService;
-        }
 
         public String register(AuthUserDTO user){
 

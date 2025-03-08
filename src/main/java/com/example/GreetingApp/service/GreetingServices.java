@@ -1,56 +1,89 @@
 package com.example.GreetingApp.service;
-import com.example.GreetingApp.models.Greeting;
+import com.example.GreetingApp.entities.MessageEntity;
+import com.example.GreetingApp.interfaces.IGreetingInterface;
 import com.example.GreetingApp.repository.GreetingRepository;
+import com.example.GreetingApp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.example.GreetingApp.dto.MessageDTO;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-public class GreetingServices {
-    @Autowired
-    private GreetingRepository greetingRepository;
-    public String getSimpleGreeting() {
-        return "Hello World";
-    }
-    public Greeting saveGreeting(String firstName, String lastName) {
-        String message;
-        if (firstName != null && lastName != null) {
-            message = "Hello, " + firstName + " " + lastName + "!";
-        } else if (firstName != null) {
-            message = "Hello, " + firstName + "!";
-        } else if (lastName != null) {
-            message = "Hello, " + lastName + "!";
-        } else {
-            message = "Hello World!";
-        }
-        Greeting greeting = new Greeting(message);
-        return greetingRepository.save(greeting);
-    }
-    public Greeting getGreetingById(Long id) {
-        return greetingRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Greeting not found with id: " + id));
-    }
-    public List<Greeting> getAllGreetings() {
-        return greetingRepository.findAll();
-    }
-    public Greeting updateGreeting(Long id, String newMessage) {
-        Optional<Greeting> existingGreeting = greetingRepository.findById(id);
+public class GreetingServices implements IGreetingInterface {
+    String message;
 
-        if (existingGreeting.isPresent()) {
-            Greeting greeting = existingGreeting.get();
-            greeting.setMessage(newMessage);  // Update message
-            return greetingRepository.save(greeting);  // Save updated greeting
-        } else {
-            throw new RuntimeException("Greeting not found with id: " + id);
-        }
+    @Autowired
+    GreetingRepository greetingRepository;
+
+
+    public void GreetingService() {
+
+        message = "Hello World!";
     }
-    public void deleteGreetingbyrepo(Long id) {
-        if (greetingRepository.existsById(id)) {
-            greetingRepository.deleteById(id);
-        } else {
-            throw new RuntimeException("Greeting not found with id: " + id);
-        }
+
+
+    public String getGreetings(){
+        return this.message;
     }
+
+    public MessageDTO saveGreetings(MessageDTO message){
+
+        MessageEntity me = new MessageEntity(message.getMessage());
+
+        greetingRepository.save(me);
+
+        MessageDTO dto = new MessageDTO(me.getMessage());
+
+        dto.setId(me.getId());
+
+        return dto;
+    }
+
+    public MessageDTO findById(Long id){
+
+        MessageEntity m1 = greetingRepository.findById(id).orElseThrow(() -> new RuntimeException("No messages found with given id"));
+
+        MessageDTO m2 = new MessageDTO(m1.getMessage());
+        m2.setId(m1.getId());
+
+        return m2;
+
+    }
+
+    public List<MessageDTO> listAll(){
+
+        List<MessageDTO> list = greetingRepository.findAll().stream().map(entity -> {
+            MessageDTO m = new MessageDTO(entity.getMessage());
+            m.setId(entity.getId());
+            return m;
+        }).collect(Collectors.toList());
+
+        return list;
+    }
+
+    public MessageDTO editById(MessageDTO message, Long id){
+
+        MessageEntity m = greetingRepository.findById(id).orElseThrow(() -> new RuntimeException("No Message was found with given id"));
+
+        m.setMessage(message.getMessage());
+
+        greetingRepository.save(m);
+
+        MessageDTO m2 = new MessageDTO(m.getMessage());
+        m2.setId(m.getId());
+
+        return m2;
+    }
+
+    public String delete(Long id){
+
+        MessageEntity m = greetingRepository.findById(id).orElseThrow(() -> new RuntimeException("Cannot find message with given id"));
+
+        greetingRepository.delete(m);
+
+        return "Message Deleted";
+
+    }
+
 }
