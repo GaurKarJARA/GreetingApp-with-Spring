@@ -75,9 +75,9 @@ import java.util.stream.Collectors;
         }
 
         //UC-forgot password
-        public AuthUserDTO forgotpassword(PassDTO pass){
+        public AuthUserDTO forgotpassword(PassDTO pass,String email){
 
-            AuthUser foundUser = userRepository.findByEmail(pass.getEmail());
+            AuthUser foundUser = userRepository.findByEmail(email);
 
             if(foundUser == null)
                 throw new RuntimeException("user not registered!");
@@ -90,6 +90,8 @@ import java.util.stream.Collectors;
 
             userRepository.save(foundUser);
 
+
+            emailService.sendEmail(email,"Password Reset status","Password has been reset");
             AuthUserDTO resDto = new AuthUserDTO(foundUser.getFirstName(), foundUser.getLastName(), foundUser.getEmail(), foundUser.getPassword(), foundUser.getId() );
 
             return resDto;

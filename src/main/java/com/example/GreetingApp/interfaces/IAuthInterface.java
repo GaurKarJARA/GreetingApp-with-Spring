@@ -13,6 +13,6 @@ import org.springframework.stereotype.Service;
         public String login(LoginDTO user);
 
         //UC-Forgot password
-        public AuthUserDTO forgotpassword(PassDTO pass);
+        public AuthUserDTO forgotpassword(PassDTO pass,String email);
     }
 
