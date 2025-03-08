@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
         @Autowired
         JwtTokenService jwtTokenService;
 
+        //creating PasswordEncoder for Secure Hashing(Spring Security)
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         public String register(AuthUserDTO user){
 
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
                 return "User already registered";
             }
 
-            //creating hashed password using bcrypt
+            //creating hashed password using bcryptPasswordEncoder
             String hashPass = bCryptPasswordEncoder.encode(user.getPassword());
 
             //creating new user
