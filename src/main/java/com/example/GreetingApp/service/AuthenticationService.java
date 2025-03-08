@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
         @Autowired
         JwtTokenService jwtTokenService;
 
-
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         public String register(AuthUserDTO user){
 
             List<AuthUser> l1 = userRepository.findAll().stream().filter(authuser -> user.getEmail().equals(authuser.getEmail())).collect(Collectors.toList());
@@ -31,8 +31,7 @@ import java.util.stream.Collectors;
             }
 
             //creating hashed password using bcrypt
-            BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
-            String hashPass = bcrypt.encode(user.getPassword());
+            String hashPass = bCryptPasswordEncoder.encode(user.getPassword());
 
             //creating new user
             AuthUser newUser = new AuthUser(user.getFirstName(), user.getLastName(), user.getEmail(), user.getPassword(), hashPass);
@@ -57,9 +56,8 @@ import java.util.stream.Collectors;
             AuthUser foundUser = l1.get(0);
 
             //matching the stored hashed password with the password provided by user
-            BCryptPasswordEncoder bcrypt = new BCryptPasswordEncoder();
 
-            if(!bcrypt.matches(user.getPassword(), foundUser.getHashPass()))
+            if(!bCryptPasswordEncoder.matches(user.getPassword(), foundUser.getHashPass()))
                 return "Invalid password";
 
             //creating Jwt Token
@@ -82,7 +80,6 @@ import java.util.stream.Collectors;
             if(foundUser == null)
                 throw new RuntimeException("user not registered!");
 
-            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
             String hashpass = bCryptPasswordEncoder.encode(pass.getNewPassword());
 
             foundUser.setPassword(pass.getNewPassword());
@@ -95,6 +92,27 @@ import java.util.stream.Collectors;
             AuthUserDTO resDto = new AuthUserDTO(foundUser.getFirstName(), foundUser.getLastName(), foundUser.getEmail(), foundUser.getPassword(), foundUser.getId() );
 
             return resDto;
+        }
+
+        //UC-Reset password
+        public String resetPassword(String email, String currentPass, String newPass){
+
+            AuthUser foundUser = userRepository.findByEmail(email);
+
+            if(foundUser == null)
+                return "user not registered!";
+
+            if(!bCryptPasswordEncoder.matches(currentPass, foundUser.getHashPass()))
+                return "incorrect password!";
+
+            foundUser.setHashPass(bCryptPasswordEncoder.encode(newPass));
+            foundUser.setPassword(newPass);
+
+            userRepository.save(foundUser);
+
+            emailService.sendEmail(email, "Password reset status", "Your password is reset successfully");
+
+            return "Password reset successfull!";
         }
 
     }

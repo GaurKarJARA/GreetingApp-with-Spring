@@ -14,5 +14,8 @@ import org.springframework.stereotype.Service;
 
         //UC-Forgot password
         public AuthUserDTO forgotpassword(PassDTO pass,String email);
+
+        //UC-Reset password
+        public String resetPassword(String email, String currentPass, String newPass);
     }
 

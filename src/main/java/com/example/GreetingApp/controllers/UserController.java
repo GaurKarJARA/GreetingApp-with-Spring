@@ -2,12 +2,14 @@ package com.example.GreetingApp.controllers;
 import com.example.GreetingApp.interfaces.IAuthInterface;
 import com.example.GreetingApp.service.*;
 import com.example.GreetingApp.dto.*;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class UserController {
+    @Autowired
     EmailService emailService;
-    JwtTokenService jwtTokenService;
+
     //Replacing constructor injection with interface -(UC-Adding-Interfaces_Autowired)
     IAuthInterface iAuthInterface;
 
@@ -33,6 +35,11 @@ public class UserController {
     @PutMapping("/forgotpassword/{email}")
     public AuthUserDTO forgotpassword(@RequestBody PassDTO pass,@PathVariable String email) {
         return iAuthInterface.forgotpassword(pass,email);
+    }
+        //UC-reset password
+    @PutMapping("/resetPassword/{email}")
+    public String resetPassword(@PathVariable String email ,@RequestParam String currentPass, @RequestParam String newPass){
+        return iAuthInterface.resetPassword(email, currentPass, newPass);
     }
 
     }
