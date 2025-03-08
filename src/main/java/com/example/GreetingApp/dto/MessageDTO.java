@@ -1,6 +1,5 @@
 package com.example.GreetingApp.dto;
 
-import jakarta.persistence.Access;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

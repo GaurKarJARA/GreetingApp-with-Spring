@@ -1,6 +1,7 @@
 package com.example.GreetingApp.service;
 import com.example.GreetingApp.dto.LoginDTO;
 import com.example.GreetingApp.dto.AuthUserDTO;
+import com.example.GreetingApp.dto.PassDTO;
 import com.example.GreetingApp.interfaces.IAuthInterface;
 import com.example.GreetingApp.models.AuthUser;
 import com.example.GreetingApp.repository.UserRepository;
@@ -71,6 +72,27 @@ import java.util.stream.Collectors;
             userRepository.save(foundUser);
 
             return "user logged in"+"\ntoken : "+token;
+        }
+
+        //UC-forgot password
+        public AuthUserDTO forgotpassword(PassDTO pass){
+
+            AuthUser foundUser = userRepository.findByEmail(pass.getEmail());
+
+            if(foundUser == null)
+                throw new RuntimeException("user not registered!");
+
+            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+            String hashpass = bCryptPasswordEncoder.encode(pass.getNewPassword());
+
+            foundUser.setPassword(pass.getNewPassword());
+            foundUser.setHashPass(hashpass);
+
+            userRepository.save(foundUser);
+
+            AuthUserDTO resDto = new AuthUserDTO(foundUser.getFirstName(), foundUser.getLastName(), foundUser.getEmail(), foundUser.getPassword(), foundUser.getId() );
+
+            return resDto;
         }
 
     }

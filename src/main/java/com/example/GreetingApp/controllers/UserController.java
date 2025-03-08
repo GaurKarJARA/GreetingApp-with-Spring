@@ -3,6 +3,7 @@ import com.example.GreetingApp.interfaces.IAuthInterface;
 import com.example.GreetingApp.service.*;
 import com.example.GreetingApp.dto.*;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 @RestController
@@ -30,4 +31,10 @@ public class UserController {
         return "Mail sent";
     }
 
-}
+        //UC-forgot password
+    @PutMapping("/forgotpassword")
+    public AuthUserDTO forgotpassword(@RequestBody PassDTO pass) {
+        return iAuthInterface.forgotpassword(pass);
+    }
+
+    }
